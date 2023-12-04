@@ -28,9 +28,9 @@ public class Main {
         }
 
         SourceRoot root = new SourceRoot(file.toPath());
-        PublicElementsPrinter printer = new PublicElementsPrinter();
+        NoGetter noGetter = new NoGetter();
         root.parse("", (localPath, absolutePath, result) -> {
-            result.ifSuccessful(unit -> unit.accept(printer, null));
+            result.ifSuccessful(unit -> unit.accept(noGetter, null));
             return SourceRoot.Callback.Result.DONT_SAVE;
         });
     }
