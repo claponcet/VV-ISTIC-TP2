@@ -16,33 +16,24 @@ public class PublicElementsPrinter extends VoidVisitorWithDefaults<Void> {
         }
     }
 
-    public void visitTypeDeclaration(TypeDeclaration<?> declaration, Void arg) {
-        if(!declaration.isPublic()) return;
-        System.out.println(declaration.getFullyQualifiedName().orElse("[Anonymous]"));
-        for(MethodDeclaration method : declaration.getMethods()) {
-            method.accept(this, arg);
-        }
-        // Printing nested types in the top level
-        for(BodyDeclaration<?> member : declaration.getMembers()) {
-            if (member instanceof TypeDeclaration)
-                member.accept(this, arg);
-        }
-    }
-
     @Override
     public void visit(ClassOrInterfaceDeclaration declaration, Void arg) {
-        visitTypeDeclaration(declaration, arg);
+        System.out.println(declaration.getNameAsString());
+        for (FieldDeclaration field : declaration.getFields())
+            field.accept(this, arg);
+        for (MethodDeclaration method : declaration.getMethods())
+            visit(method, arg);
     }
 
     @Override
-    public void visit(EnumDeclaration declaration, Void arg) {
-        visitTypeDeclaration(declaration, arg);
+    public void visit(FieldDeclaration declaration, Void arg) {
+        System.out.println("\t" + declaration.toString());
     }
 
     @Override
     public void visit(MethodDeclaration declaration, Void arg) {
         if(!declaration.isPublic()) return;
-        System.out.println("  " + declaration.getDeclarationAsString(true, true));
+        System.out.println("\t" + declaration.getDeclarationAsString(true, true));
     }
 
 }
